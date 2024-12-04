@@ -13,16 +13,26 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  get http => null;
+
 
   Future<void> register() async {
     try {
+
+
+      final url = Uri.parse('http://10.0.2.2:3060/register');
+      // Define the data to send in the body
+      final body = json.encode({
+        'email': _emailController.text,  // Changed 'username' to 'email' to match backend
+        'password': _passwordController.text,
+      });
+
+
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3060/register'),  // Use your backend register URL
-        body: {
-          'email': _emailController.text,
-          'password': _passwordController.text,
+        url,
+        headers: {
+          'Content-Type': 'application/json',  // Make sure to set the correct headers
         },
+        body: body,
       );
 
       // Log the full response for debugging

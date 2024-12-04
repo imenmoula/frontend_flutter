@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:timetable_app/register_page.dart';
 import 'dart:convert';
 import 'HomePage.dart';
+import 'dart:convert';
  // Import the RegisterPage
 
 class LoginPage extends StatefulWidget {
@@ -16,13 +17,24 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> login() async {
     try {
+
+      final url = Uri.parse('http://10.0.2.2:3060/login');  // Replace with your API URL
+
+      // Define the data to send in the body
+      final body = json.encode({
+        'email': _usernameController.text,  // Changed 'username' to 'email' to match backend
+        'password': _passwordController.text,
+      });
+
+
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3060/login'),  // Use 10.0.2.2 for Android Emulator if needed
-        body: {
-          'email': _usernameController.text,  // Changed 'username' to 'email' to match backend
-          'password': _passwordController.text,
+        url,
+        headers: {
+          'Content-Type': 'application/json',  // Make sure to set the correct headers
         },
+        body: body,
       );
+
 
       // Log the entire response body in the console for debugging
       print('Response status: ${response.statusCode}');
