@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';  // Importer la page de login
+import 'package:timetable_app/HomePage.dart';
+import 'package:timetable_app/login_page.dart';
+import 'package:timetable_app/register_page.dart';
 
-void main() {
-  runApp(MyApp());
-}
+void main() => runApp(new MyApp());
+
+final routes = {
+  '/login': (BuildContext context) => new LoginPage(),
+  '/home': (BuildContext context) => new HomePage(),
+  '/register': (BuildContext context) => new RegisterPage(),
+  '/': (BuildContext context) => new LoginPage(),
+};
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      // Définir la page initiale de l'application comme étant la page de login
-      home: LoginPage(),
+    return new MaterialApp(
+      title: 'Login Register App',
+      theme: new ThemeData(primarySwatch: Colors.teal),
+      routes: routes,
     );
   }
 }

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'ApiService.dart';
+import 'package:http/http.dart' as http;
+
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -7,40 +10,58 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final ApiService apiService = ApiService();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  String? _message;
-  bool _isLoading = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  // Inscription
-  void register() async {
-    setState(() {
-      _isLoading = true;
-    });
+  get http => null;
 
-    final email = emailController.text;
-    final password = passwordController.text;
+  Future<void> register() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3060/register'),  // Use your backend register URL
+        body: {
+          'email': _emailController.text,
+          'password': _passwordController.text,
+        },
+      );
 
-    // Appeler l'API pour enregistrer l'utilisateur
-    final response = await apiService.register(email, password);
+      // Log the full response for debugging
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-    setState(() {
-      _isLoading = false;
-      _message = response['message'] ?? response['error'];
-    });
+      // Check if the response body contains valid JSON
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-    // Afficher un message après l'inscription
-    if (response['message'] != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(response['message']),
-        backgroundColor: Colors.green,
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(response['error']),
-        backgroundColor: Colors.red,
-      ));
+        if (data['message'] != null) {
+          // Handle registration success (e.g., show a success message)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(data['message'])),
+          );
+        } else {
+          // Show error message if the response contains an error
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Registration Failed'),
+              content: Text(data['error'] ?? 'Unknown error'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
+        }
+      } else {
+        // If the status code is not 200, print the error
+        print('Failed to register, status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
@@ -54,43 +75,20 @@ class _RegisterPageState extends State<RegisterPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Champ de saisie pour l'email
             TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
             ),
-            SizedBox(height: 16),
-            // Champ de saisie pour le mot de passe
             TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 16),
-            // Bouton d'inscription
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
+            SizedBox(height: 20),
+            ElevatedButton(
               onPressed: register,
               child: Text('Register'),
             ),
-            SizedBox(height: 16),
-            // Message d'erreur ou de succès
-            if (_message != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  _message!,
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
           ],
         ),
       ),

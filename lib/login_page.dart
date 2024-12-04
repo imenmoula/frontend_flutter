@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:timetable_app/register_page.dart';
 import 'dart:convert';
 import 'HomePage.dart';
-// Import the HomePage widget
+ // Import the RegisterPage
 
 class LoginPage extends StatefulWidget {
   @override
@@ -60,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +84,18 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: login,
               child: Text('Login'),
+            ),
+            SizedBox(height: 20),
+            // Add a link to the registration page
+            TextButton(
+              onPressed: () {
+                // Navigate to the RegisterPage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegisterPage()),
+                );
+              },
+              child: Text('Don\'t have an account? Register here'),
             ),
           ],
         ),
