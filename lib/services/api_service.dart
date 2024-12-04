@@ -23,24 +23,30 @@ class ApiService {
 
   // Add a new room
   Future<bool> addRoom(String roomId, String roomName, int capacity, String building, int floor) async {
-    final url = Uri.parse('$baseUrl/rooms');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'room_id': roomId,
-        'room_name': roomName,
-        'capacity': capacity,
-        'building': building,
-        'floor': floor,
-      }),
-    );
+    try {
+      var response = await http.post(
+        Uri.parse('http://10.0.2.2:3060/rooms'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'room_id': roomId,
+          'room_name': roomName,
+          'capacity': capacity,
+          'building': building,
+          'floor': floor,
+        }),
+      );
 
-    if (response.statusCode == 201) {
-      return true; // Success
-    } else {
-      print('Error: ${response.body}');
-      return false; // Failure
+      print('Réponse du serveur : ${response.body}');  // Affiche le corps de la réponse
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print('Erreur avec le statut ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Erreur lors de l\'ajout de la salle : $e');
+      return false;
     }
   }
 
@@ -57,17 +63,22 @@ class ApiService {
   }
 
   // Edit a room
-  Future<bool> editRoom(String roomId, Map<String, Object?> roomData) async {
-    final response = await http.put(
-      Uri.parse('$baseUrl/rooms/$roomId'),
-      body: jsonEncode(roomData),
-      headers: {'Content-Type': 'application/json'},
-    );
+  Future<bool> editRoom(String roomId, Map<String, dynamic> data) async {
+    try {
+      // Make an HTTP PUT request to edit the room (ensure your endpoint and data are correct)
+      var response = await http.put(
+        Uri.parse('http://10.0.2.2:3060/rooms/$roomId'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data),
+      );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      print('Error editing room: ${response.body}');
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print('Error editing room: $e');
       return false;
     }
   }

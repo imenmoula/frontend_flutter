@@ -51,15 +51,23 @@ class _AddRoomPageState extends State<AddRoomPage> {
         'floor': floor,
       };
 
-      final success = widget.room == null
-          ? await apiService.addRoom(roomId, roomName, capacity, building, floor)
-          : await apiService.editRoom(roomId, data);
+      print('Données envoyées : $data'); // Vérification des données envoyées
 
+      bool success;
+
+      // Appel de la méthode d'ajout ou d'édition de salle
+      if (widget.room == null) {
+        success = await apiService.addRoom(roomId, roomName, capacity, building, floor);
+      } else {
+        success = await apiService.editRoom(roomId, data);
+      }
+
+      // Affichage du résultat
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Room saved successfully!')),
         );
-        Navigator.pop(context);
+        Navigator.pop(context);  // Retour à l'écran précédent
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to save room.')),
@@ -67,6 +75,8 @@ class _AddRoomPageState extends State<AddRoomPage> {
       }
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +94,26 @@ class _AddRoomPageState extends State<AddRoomPage> {
                 onSaved: (value) => roomName = value!,
                 validator: (value) => value!.isEmpty ? 'Please enter Room Name' : null,
               ),
-              // Add other form fields here...
+              TextFormField(
+                initialValue: capacity.toString(),
+                decoration: InputDecoration(labelText: 'Capacity'),
+                keyboardType: TextInputType.number,
+                onSaved: (value) => capacity = int.parse(value!),
+                validator: (value) => value!.isEmpty ? 'Please enter Capacity' : null,
+              ),
+              TextFormField(
+                initialValue: building,
+                decoration: InputDecoration(labelText: 'Building'),
+                onSaved: (value) => building = value!,
+                validator: (value) => value!.isEmpty ? 'Please enter Building' : null,
+              ),
+              TextFormField(
+                initialValue: floor.toString(),
+                decoration: InputDecoration(labelText: 'Floor'),
+                keyboardType: TextInputType.number,
+                onSaved: (value) => floor = int.parse(value!),
+                validator: (value) => value!.isEmpty ? 'Please enter Floor' : null,
+              ),
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Text(widget.room == null ? 'Add Room' : 'Save Changes'),
