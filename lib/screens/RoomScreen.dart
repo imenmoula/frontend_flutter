@@ -2,89 +2,75 @@
 
 import 'package:flutter/material.dart';
 
-import 'ApiService.dart';
-import 'Room.dart';
+import '../models/Room.dart';
 
 
-class RoomScreen extends StatefulWidget {
-  @override
-  _RoomScreenState createState() => _RoomScreenState();
+import 'package:flutter/material.dart';
+
+import '../services/api_service.dart';
+
+void main() {
+  runApp(MyApp());
 }
 
-class _RoomScreenState extends State<RoomScreen> {
-  final ApiService apiService = ApiService();
-  late Future<List<Room>> rooms;
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Rooms App',
+      home: RoomsScreen(),
+    );
+  }
+}
+
+class RoomsScreen extends StatefulWidget {
+  @override
+  _RoomsScreenState createState() => _RoomsScreenState();
+}
+
+class _RoomsScreenState extends State<RoomsScreen> {
+  late Future<List<Room>> futureRooms;
 
   @override
   void initState() {
     super.initState();
-    rooms = apiService.getRooms();
-  }
-
-  // Function to add a room (triggered from UI)
-  void _addRoom() async {
-    final newRoom = Room(
-      roomId: 0,
-      roomName: 'New Room',
-      capacity: 30,
-      building: 'Building A',
-      floor: '1st',
-    );
-    await apiService.addRoom(newRoom);
-    setState(() {
-      rooms = apiService.getRooms(); // Refresh rooms list
-    });
-  }
-
-  // Function to delete a room
-  void _deleteRoom(int roomId) async {
-    await apiService.deleteRoom(roomId);
-    setState(() {
-      rooms = apiService.getRooms(); // Refresh rooms list
-    });
+    futureRooms = ApiService().fetchRooms();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Rooms'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _addRoom,
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text('Rooms')),
       body: FutureBuilder<List<Room>>(
-        future: rooms,
+        future: futureRooms,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No rooms available.'));
-          } else {
-            final rooms = snapshot.data!;
-            return ListView.builder(
-              itemCount: rooms.length,
-              itemBuilder: (context, index) {
-                final room = rooms[index];
-                return ListTile(
-                  title: Text(room.roomName),
-                  subtitle: Text('Capacity: ${room.capacity}'),
-                  onTap: () {
-                    // Navigate or handle room details
-                  },
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => _deleteRoom(room.roomId),
-                  ),
-                );
-              },
-            );
+            return Center(child: Text('No rooms found.'));
           }
+
+          List<Room> rooms = snapshot.data!;
+          return ListView.builder(
+            itemCount: rooms.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(rooms[index].roomName),
+                subtitle: Text('Capacity: ${rooms[index].capacity}'),
+                trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    await ApiService().deleteRoom(rooms[index].roomId);
+                    setState(() {
+                      futureRooms = ApiService().fetchRooms();
+                    });
+                  },
+                ),
+              );
+            },
+          );
         },
       ),
     );

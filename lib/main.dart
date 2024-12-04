@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:timetable_app/HomePage.dart';
 import 'package:timetable_app/login_page.dart';
 import 'package:timetable_app/register_page.dart';
+import 'HomePage.dart';
+import 'AddRoomPage.dart';
+import 'RoomListPage.dart'; // Import your AddRoomPage here
+
+// Assurez-vous que ce fichier existe
 
 void main() => runApp(MyApp());
 
@@ -9,27 +13,26 @@ final routes = {
   '/login': (BuildContext context) => LoginPage(),
   '/home': (BuildContext context) => HomePage(),
   '/register': (BuildContext context) => RegisterPage(),
+  '/rooms': (context) => RoomListPage(), // New route
   '/': (BuildContext context) => LoginPage(),
 };
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login Register App',
+      title: 'Timetable App',
       theme: ThemeData(
-        // Modification de la couleur principale en bleu
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(
           titleLarge: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
-            color: Colors.blue[800], // Couleur des titres en bleu
+            color: Colors.blue[800],
           ),
           bodyMedium: TextStyle(
             fontSize: 18,
-            color: Colors.black87, // Couleur du texte principal
+            color: Colors.black87,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
@@ -37,13 +40,13 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(30.0),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue), // Couleur bleu pour le focus
+            borderSide: BorderSide(color: Colors.blue),
           ),
-          labelStyle: TextStyle(color: Colors.blue[600]), // Couleur du label en bleu
+          labelStyle: TextStyle(color: Colors.blue[600]),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue, // Couleur des boutons en bleu
+            backgroundColor: Colors.blue,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ),
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         appBarTheme: AppBarTheme(
-          color: Colors.blue[600], // Couleur du AppBar en bleu
+          color: Colors.blue[600],
           elevation: 0,
           titleTextStyle: TextStyle(
             fontWeight: FontWeight.bold,

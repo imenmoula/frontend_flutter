@@ -1,11 +1,17 @@
 class Room {
-  final int roomId;
+  final String roomId;
   final String roomName;
   final int capacity;
   final String building;
-  final String floor;
+  final int floor;
 
-  Room({required this.roomId, required this.roomName, required this.capacity, required this.building, required this.floor});
+  Room({
+    required this.roomId,
+    required this.roomName,
+    required this.capacity,
+    required this.building,
+    required this.floor,
+  });
 
   factory Room.fromJson(Map<String, dynamic> json) {
     return Room(
