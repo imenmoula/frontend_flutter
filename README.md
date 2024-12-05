@@ -7,14 +7,24 @@
 - **User Authentication:**
   - Login screen for registered users.
   - Registration screen for new users.
+  -logout
   
-- **Task Management:**
-  - Add, edit, and delete tasks.
-  - Track task time and set reminders.
+- **rooms Management:**
+  - Add, edit, and delete rooms
+ 
 
 - **Home Screen:**
   - Displays a list of tasks with options to view, edit, or delete.
 
+## Screenshots
+
+![Login Screen](assets/login.png)  
+*Login Screen*
+
+![Home Screen](assets/registre.png)  
+*Home Screen*
+
+## Installation
 ## Screenshots
 
 ![Login Screen](assets/login.png)  
