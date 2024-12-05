@@ -65,10 +65,25 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // Logout function
+  void _logout() {
+    // Here, handle any logout logic you need (e.g., clear session, token, etc.)
+    // After logout, navigate to the login page (or another page)
+    Navigator.pushReplacementNamed(context, '/login'); // Assuming '/login' route is defined
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Rooms')),
+      appBar: AppBar(
+        title: Text('Rooms'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout,  // Logout when this button is pressed
+          ),
+        ],
+      ),
       body: FutureBuilder<List<Room>>(
         future: _rooms,
         builder: (context, snapshot) {
