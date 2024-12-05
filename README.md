@@ -34,17 +34,6 @@
 ![student data](assets/student.png)  
 *student data*
 
-![subject data](assets/subjcte.png)  
-*subject data*
-![teacher data](assets/teacher.png)  
-*teacher data*
-![classe data](assets/classe.png)  
-*classe data*
-
-
-
-
-
 ## Installation
 
 ### Prerequisites
